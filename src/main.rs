@@ -66,7 +66,7 @@ async fn main() {
 				.send_message(&*client.cache_and_http.http, |msg| {
 					msg.content(format!(
 						"Server came {} after {} minutes since last change.",
-						if info.0.is_some() { "up" } else { "down" },
+						if new_info.0.is_some() { "up" } else { "down" },
 						(now - last_change).as_secs() / 60,
 					))
 				})
