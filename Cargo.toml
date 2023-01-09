@@ -1,0 +1,12 @@
+[package]
+name = "mcuptime-bot"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+craftping = { version = "0.3.1", default-features = false, features = ["async-tokio"] }
+clap = {version = "4", features = ["derive", "env"]}
+serenity = {version = "*", default-features = false, features = ["client", "model", "utils", "gateway", "rustls_backend"]}
+tokio = {version = "*", features = ["full"]}
