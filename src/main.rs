@@ -15,6 +15,8 @@ struct Args {
 	pub mc_server: String,
 	#[arg(short = 'p', long, env = "MINECRAFT_PORT", default_value = "25565")]
 	pub mc_port: u16,
+	#[arg(short = 'i', long, env = "PING_INTERVAL", default_value = "5")]
+	pub interval: u64,
 }
 
 #[tokio::main]
@@ -52,7 +54,7 @@ async fn main() {
 		.expect("Failed to send hello");
 	// Start main loop
 	loop {
-		tokio::time::sleep(Duration::from_secs(60)).await;
+		tokio::time::sleep(Duration::from_secs(args.interval * 60)).await;
 		let new_info = ServerInfo::get(&server, port).await;
 		if new_info.0.is_some() ^ info.0.is_some() {
 			let now = Instant::now();
