@@ -1,3 +1,5 @@
+#![warn(clippy::pedantic)]
+
 use std::time::{Duration, Instant};
 
 use clap::Parser;
