@@ -1,6 +1,6 @@
 use std::time::{Duration, Instant};
 
-use clap::{builder::Str, Parser};
+use clap::Parser;
 use craftping::{tokio::ping, Response};
 use serenity::{prelude::GatewayIntents, Client};
 use tokio::net::TcpStream;
@@ -40,6 +40,7 @@ async fn main() {
 	let server = args.mc_server;
 	let port = args.mc_port;
 	let mut info = ServerInfo::get(&server, port).await;
+	println!("Enter main loop");
 	let mut last_change = Instant::now();
 	// Send hello message
 	channel
@@ -80,7 +81,9 @@ struct ServerInfo(pub Option<Response>);
 impl ServerInfo {
 	async fn get(server: &str, port: u16) -> Self {
 		if let Ok(mut stream) = TcpStream::connect((server, port)).await {
-			if let Ok(ping) = ping(&mut stream, server, port).await {
+			if let Ok(Ok(ping)) =
+				tokio::time::timeout(Duration::from_secs(10), ping(&mut stream, server, port)).await
+			{
 				ServerInfo(Some(ping))
 			} else {
 				ServerInfo(None)
