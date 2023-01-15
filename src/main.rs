@@ -83,13 +83,15 @@ struct ServerInfo(pub Option<Response>);
 impl ServerInfo {
 	async fn get(server: &str, port: u16) -> Self {
 		if let Ok(mut stream) = TcpStream::connect((server, port)).await {
-			if let Ok(Ok(ping)) =
-				tokio::time::timeout(Duration::from_secs(10), ping(&mut stream, server, port)).await
-			{
-				ServerInfo(Some(ping))
-			} else {
-				ServerInfo(None)
+			for _ in 0..5 {
+				if let Ok(Ok(ping)) =
+					tokio::time::timeout(Duration::from_secs(10), ping(&mut stream, server, port))
+						.await
+				{
+					return ServerInfo(Some(ping));
+				}
 			}
+			ServerInfo(None)
 		} else {
 			ServerInfo(None)
 		}
